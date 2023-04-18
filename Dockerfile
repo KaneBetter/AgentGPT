@@ -2,8 +2,10 @@
 FROM node:19-alpine
 
 ARG NODE_ENV
-
-ENV NODE_ENV=$NODE_ENV
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ARG OPENAI_API_KEY
+ARG DATABASE_URL
 
 # Set the working directory
 WORKDIR /app
@@ -16,8 +18,7 @@ RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
-RUN mv .env.docker .env  \
-    && sed -ie 's/postgresql/sqlite/g' prisma/schema.prisma \
+RUN sed -ie 's/postgresql/sqlite/g' prisma/schema.prisma \
     && sed -ie 's/mysql/sqlite/g' prisma/schema.prisma \
    && sed -ie 's/@db.Text//' prisma/schema.prisma
 
